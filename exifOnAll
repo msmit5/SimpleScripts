@@ -1,0 +1,28 @@
+#!/bin/zsh
+# This script runs exiftool on every jpg file in the folder it is called in
+# It is a quick an dirty script and probably has a bug or two. Oops
+echo -n "Currently running on "
+pwd
+
+mkdir metadata
+
+for file in *.jpg
+do
+        outFile="metadata/meta-"
+        outFile+="$file"
+        outFile+=".txt"
+
+        printf "Beginning to write to %s\n" $outFile
+        echo -n "MD5:  " > $outFile
+        md5sum $file >> $outFile
+
+        echo -n "MD5:  " >> $outFile
+        sha1sum $file >> $outFile
+
+        # Printing 20 '+=" or 80 characters total to make a separator for the audit file 
+        printf '+=%.0s' {1..40} >> $outFile
+        printf '\n' >> $outFile
+
+        # EXIFTOOL STUFF!
+        exiftool $file >> $outFile
+done
